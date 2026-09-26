@@ -26,8 +26,7 @@ SECRET_KEY = 'django-insecure-@9ra^k5@!#uucb@=ui7jiw9kr!5kt@i-!2wixb^=+&bx4&75a$
 DEBUG = False
 
 ALLOWED_HOSTS = [
-    '127.0.0.1',
-    'localhost',
+    'fashionhub-u46n.onrender.com',
 ]
 
 
