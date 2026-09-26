@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-md-6">
+
+            <div class="card shadow-sm">
+
+                <div class="card-body">
+
+                    <h3 class="text-center mb-4">
+                        My Profile
+                    </h3>
+
+                    <form method="POST">
+                        {% csrf_token %}
+
+                        <!-- Name -->
+                        <div class="mb-3">
+                            <label class="form-label">
+                                Name
+                            </label>
+
+                            <input type="text"
+                                   name="name"
+                                   class="form-control"
+                                   placeholder="Enter your name"
+                                   value="{% if profile %}{{ profile.name }}{% endif %}"
+                                   required>
+                        </div>
+
+
+                        <!-- Mobile Number -->
+                        <div class="mb-3">
+                            <label class="form-label">
+                                Mobile Number
+                            </label>
+
+                            <input type="tel"
+                                   name="phone"
+                                   class="form-control"
+                                   placeholder="Enter mobile number"
+                                   value="{% if profile %}{{ profile.phone }}{% endif %}"
+                                   required>
+                        </div>
+
+
+                        <!-- Address -->
+                        <div class="mb-3">
+                            <label class="form-label">
+                                Address
+                            </label>
+
+                            <textarea name="address"
+                                      class="form-control"
+                                      rows="4"
+                                      placeholder="Enter your address"
+                                      required>{% if profile %}{{ profile.address }}{% endif %}</textarea>
+                        </div>
+
+
+                        <!-- Save -->
+                        <button type="submit"
+                                class="btn btn-primary w-100">
+
+                            <i class="fa-solid fa-floppy-disk me-2"></i>
+
+                            Save Profile
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -34,6 +34,9 @@ urlpatterns = [
     path('men/',frontend_view.men,name='men'),
     path('kids/',frontend_view.kids,name='kids'),
     path('accessories/',frontend_view.Accessories,name='Accessories'),
+    path('profile/', frontend_view.profile, name='profile'),
+    path('logout/', frontend_view.logout, name='logout'),
+   
     
     
 ]

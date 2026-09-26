@@ -137,5 +137,9 @@ def cart(request):
 
 def order(request):
     return render(request, "order.html")
+def profile(request):
+       return render(request,"profile.html")
+def logout(request):
+       return render(request,"logout.html")
 
 
