@@ -23,9 +23,9 @@ from django.conf import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('home/',frontend_view.home,name='home'),
+     path('', frontend_view.home, name='home'),
     path('login/',frontend_view.login,name='login'),
-    path('',frontend_view.register,name='register'),
+    path('register/',frontend_view.register,name='register'),
     path('products/',frontend_view.products,name='products'),
     path('products-details/',frontend_view.products_details,name='products_details'),
     path('cart/',frontend_view.cart,name='cart'),
