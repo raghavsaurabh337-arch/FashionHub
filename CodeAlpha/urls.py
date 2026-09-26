@@ -36,6 +36,8 @@ urlpatterns = [
     path('accessories/',frontend_view.Accessories,name='Accessories'),
     path('profile/', frontend_view.profile, name='profile'),
     path('logout/', frontend_view.logout, name='logout'),
+    path('account-business/', frontend_view.Account_Business, name='Account_Business'),
+  
    
     
     

@@ -141,5 +141,7 @@ def profile(request):
        return render(request,"profile.html")
 def logout(request):
        return render(request,"logout.html")
+def Account_Business(request):
+       return render(request,"Account_Business.html")
 
 

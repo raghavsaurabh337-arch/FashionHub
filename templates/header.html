@@ -132,13 +132,18 @@
                 HOME
             </a>
             <a class="dropdown-item text-bold-black"
+               href="{% url 'Account_Business' %}">
+               <i class="fa-solid fa-briefcase"></i>
+                Account Business
+            </a>
+            <a class="dropdown-item text-bold-black"
                href="{% url 'cart' %}">
                 <i class="fa-solid fa-cart-shopping me-2"></i>
                 Cart
             </a>
             <a class="dropdown-item text-bold-black"
                href="{% url 'order' %}">
-                <i class="fa-solid fa-box  me-2"></i>                Order
+                <i class="fa-solid fa-box  me-2"></i>Order
             </a>
             <a class="dropdown-item text-danger"
                href="{% url 'logout' %}">
