@@ -1,0 +1,244 @@
+
+
+    /* =========================
+       MAIN NAVBAR
+       ========================= */
+
+    .navbar-container {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+
+    /* =========================
+       LOGO
+       ========================= */
+
+    .navbar-brand {
+        font-size: 24px;
+        white-space: nowrap;
+        margin: 0;
+    }
+
+
+    /* =========================
+       LEFT MENU
+       ========================= */
+
+    .left-menu {
+        display: flex;
+        flex-direction: row;
+        gap: 8px;
+        margin: 0;
+        padding: 0;
+        white-space: nowrap;
+    }
+
+
+    .left-menu .nav-link,
+    .right-menu .nav-link {
+        color: white;
+        padding: 6px 8px;
+        white-space: nowrap;
+    }
+
+
+    .left-menu .nav-link:hover,
+    .right-menu .nav-link:hover {
+        color: #ffc107;
+    }
+
+
+    .left-menu .nav-link.active,
+    .right-menu .nav-link.active {
+        color: #ffc107;
+    }
+
+
+    /* =========================
+       SEARCH
+       ========================= */
+
+    .search-form {
+        display: flex;
+        flex: 1;
+        max-width: 400px;
+        min-width: 150px;
+        margin: 0 auto;
+    }
+
+
+    .search-form input {
+        border-radius: 20px 0 0 20px;
+    }
+
+
+    .search-form button {
+        border-radius: 0 20px 20px 0;
+    }
+
+
+    /* =========================
+       RIGHT MENU
+       ========================= */
+
+    .right-menu {
+        display: flex;
+        flex-direction: row;
+        gap: 8px;
+        margin: 0;
+        padding: 0;
+        white-space: nowrap;
+    }
+
+
+
+    /* =========================
+       TABLET
+       ========================= */
+
+    @media (max-width: 992px) {
+
+        .navbar-container {
+            gap: 5px;
+        }
+
+
+        .navbar-brand {
+            font-size: 18px;
+        }
+
+
+        .left-menu,
+        .right-menu {
+            gap: 2px;
+        }
+
+
+        .left-menu .nav-link,
+        .right-menu .nav-link {
+            font-size: 12px;
+            padding: 5px 3px;
+        }
+
+
+        .search-form {
+            max-width: 180px;
+            min-width: 100px;
+        }
+
+    }
+
+
+
+    /* =========================
+       MOBILE
+       ========================= */
+
+    @media (max-width: 576px) {
+
+        .navbar {
+            padding: 4px 2px;
+        }
+
+
+        .navbar-container {
+            width: 100%;
+            gap: 2px;
+            flex-wrap: nowrap;
+            font-size: 7px;
+            
+        }
+
+
+        /* Logo */
+
+        .navbar-brand {
+            font-size: 10px;
+            padding: 2px;
+            margin: 0;
+        }
+
+
+        .navbar-brand i {
+            font-size: 9px;
+        }
+
+
+        /* Left Menu */
+
+        .left-menu {
+            gap: 0;
+            flex-shrink: 1;
+        }
+
+
+        .left-menu .nav-link {
+            font-size: 7px;
+            padding: 3px 2px;
+        }
+
+
+        .left-menu .nav-link i {
+            font-size: 7px;
+        }
+
+
+        /* Search */
+
+        .search-form {
+            flex: 1;
+            min-width: 55px;
+            max-width: 100px;
+            margin: 0 2px;
+        }
+
+
+        .search-form input {
+            width: 100%;
+            min-width: 0;
+            height: 24px;
+            font-size: 7px;
+            padding: 2px 4px;
+        }
+
+
+        .search-form button {
+            height: 24px;
+            width: 23px;
+            padding: 2px;
+        }
+
+
+        .search-form button i {
+            font-size: 8px;
+        }
+
+
+        /* Right Menu */
+
+        .right-menu {
+            gap: 0;
+            flex-shrink: 0;
+        }
+
+
+        .right-menu .nav-link {
+            font-size: 7px;
+            padding: 3px 2px;
+        }
+
+
+        .right-menu .nav-link i {
+            font-size: 7px;
+        }
+
+
+        .right-menu .badge {
+            font-size: 5px;
+            padding: 1px 3px;
+        }
+
+    }
+
