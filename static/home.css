@@ -51,29 +51,3 @@
         color: #777;
     }
 
-
-    /* Mobile */
-    @media (max-width: 576px) {
-
-        .category-img {
-            height: 190px;
-        }
-
-        .category-body {
-            padding: 12px 5px 14px;
-        }
-
-        .category-body h5 {
-            font-size: 14px;
-        }
-
-        .category-body span {
-            font-size: 12px;
-        }
-
-        .category-card {
-            border-radius: 11px;
-        }
-
-    }
-

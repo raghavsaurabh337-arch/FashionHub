@@ -116,7 +116,8 @@ def kids(request):
 
 
 def Accessories(request):
-    products = Product.objects.filter(category='Accessories')
+    
+    products = Product.objects.filter(name__icontains='watch')
     for product in products:
                  product.name = product.name.capitalize()
                  product.color = product.color.capitalize()
