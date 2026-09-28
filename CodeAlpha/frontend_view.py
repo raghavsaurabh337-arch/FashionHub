@@ -13,8 +13,14 @@ from django.contrib.auth.hashers import make_password, check_password
 def register(request):
 
     if request.method == "POST":
-
         password = request.POST["password"]
+        confirm_password = request.POST["confirm_password"]
+
+        if password != confirm_password:
+            return render(request, "register.html", {"error": "Passwords do not match"})
+
+        if Register.objects.filter(email=request.POST["email"]).exists():
+            return render(request, "register.html", {"error": "Email already registered"})
 
         Register.objects.create(
             full_name=request.POST["full_name"],
@@ -22,7 +28,6 @@ def register(request):
             mobile=request.POST["mobile"],
             password=make_password(password)
         )
-
         return redirect("login")
 
     return render(request, "register.html")
@@ -30,6 +35,9 @@ def register(request):
 
 
 def login(request):
+
+    if request.session.get("user_id"):
+        return redirect("home")
 
     if request.method == "POST":
 
@@ -117,7 +125,7 @@ def kids(request):
 
 def Accessories(request):
     
-    products = Product.objects.filter(name__icontains='watch')
+    products = Product.objects.filter(gender='accessories')
     for product in products:
                  product.name = product.name.capitalize()
                  product.color = product.color.capitalize()
@@ -184,7 +192,8 @@ def order(request):
 def profile(request):
        return render(request,"profile.html")
 def logout(request):
-       return render(request,"logout.html")
+    request.session.flush()
+    return redirect("login")
 def Account_Business(request):
        return render(request,"Account_Business.html")
 

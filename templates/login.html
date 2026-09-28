@@ -78,6 +78,11 @@
 
                         </div>
 
+                        <!-- Error Message -->
+                        {% if error %}
+                        <div class="alert alert-danger">{{ error }}</div>
+                        {% endif %}
+
                         <!-- Remember -->
 
                         <div class="d-flex justify-content-between mb-3">
@@ -93,16 +98,7 @@
 
                             </div>
 
-                            <a href="register.html" class="text-decoration-none">
-                                Forgot Password?
-                            </a>
-
                         </div>
-
-                        <!-- Error Message -->
-                        {% if error %}
-                        <div class="alert alert-danger">{{ error }}</div>
-                        {% endif %}
 
                         <!-- Button -->
 

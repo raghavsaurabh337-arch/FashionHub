@@ -16,6 +16,9 @@
     <h3 class="fw-bold mb-4">Your Cart</h3>
 
     {% if cart_items %}
+
+    <!-- Desktop Table -->
+    <div class="d-none d-md-block">
     <div class="table-responsive">
         <table class="table align-middle">
             <thead class="table-dark">
@@ -59,6 +62,39 @@
                 {% endfor %}
             </tbody>
         </table>
+    </div>
+    </div>
+
+    <!-- Mobile Cards -->
+    <div class="d-md-none">
+        {% for item in cart_items %}
+        <div class="card mb-3 shadow-sm">
+            <div class="card-body">
+                <div class="d-flex gap-3">
+                    {% if item.product.image %}
+                    <img src="{{ item.product.image.url }}" width="70" height="70" style="object-fit:cover; border-radius:8px; flex-shrink:0;">
+                    {% endif %}
+                    <div class="flex-grow-1">
+                        <b>{{ item.product.name }}</b>
+                        <div class="text-muted small">{{ item.product.brand }} | {{ item.product.size }}</div>
+                        <div class="text-danger fw-bold">₹{{ item.product.discount_price }}</div>
+                    </div>
+                    <a href="{% url 'remove_from_cart' item.id %}" class="btn btn-sm btn-danger align-self-start">
+                        <i class="fa-solid fa-trash"></i>
+                    </a>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mt-2">
+                    <form method="POST" action="{% url 'update_cart' item.id %}" class="d-flex align-items-center gap-2">
+                        {% csrf_token %}
+                        <button type="submit" name="action" value="decrease" class="btn btn-sm btn-outline-secondary">-</button>
+                        <span>{{ item.quantity }}</span>
+                        <button type="submit" name="action" value="increase" class="btn btn-sm btn-outline-secondary">+</button>
+                    </form>
+                    <span class="fw-bold">Total: ₹{{ item.total }}</span>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
     </div>
 
     <div class="text-end">

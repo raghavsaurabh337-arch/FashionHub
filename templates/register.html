@@ -132,6 +132,11 @@
 
                         </div>
 
+                        <!-- Error Message -->
+                        {% if error %}
+                        <div class="alert alert-danger">{{ error }}</div>
+                        {% endif %}
+
                         <!-- Register Button -->
                         <button type="submit" class="btn btn-success w-100">
                             <i class="fa-solid fa-user-plus"></i>
@@ -150,7 +155,7 @@
                             Login
                         </a>
                     </p>
-                    <a href="/accounts/google/login/">
+                    <a href="/accounts/google/login/" style="display:none">
                 Login with Google
             </a>
 
