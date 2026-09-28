@@ -114,12 +114,13 @@
 
                         {% if product.stock > 0 %}
 
-                        <button class="btn btn-warning cart-btn">
-
-                            <i class="fa-solid fa-cart-shopping"></i>
-                            Add To Cart
-
-                        </button>
+                        <form method="POST" action="{% url 'add_to_cart' product.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-warning cart-btn w-100">
+                                <i class="fa-solid fa-cart-shopping"></i>
+                                Add To Cart
+                            </button>
+                        </form>
 
                         {% else %}
 

@@ -1,4 +1,4 @@
-from .models import Register, Product
+from .models import Register, Product,Cart
 from rest_framework import serializers
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -16,3 +16,8 @@ class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = '__all__'
+
+# class CartSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Cart
+#         fields = '__all__'

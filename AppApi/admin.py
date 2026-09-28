@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Register, Product
+from .models import Register, Product , Cart
 
 # Register your models here.
 
@@ -26,3 +26,17 @@ class ProductAdmin(admin.ModelAdmin):
     ordering = ("-created_at",)
 
     list_per_page = 10
+
+
+
+# @admin.register(Cart)
+# class CartAdmin(admin.ModelAdmin):
+#     list_display = ("id", "user", "product", "quantity", "created_at")
+
+#     search_fields = ("user__full_name", "product__name")
+
+#     list_filter = ("created_at",)
+
+#     ordering = ("-created_at",)
+
+#     list_per_page = 10

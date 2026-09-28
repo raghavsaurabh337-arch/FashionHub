@@ -4,7 +4,7 @@ from django.contrib.auth import authenticate, login
 from itertools import product
 
 from django.shortcuts import render, redirect
-from AppApi.models import Register, Product
+from AppApi.models import Register, Product, Cart
 from django.contrib.auth.hashers import make_password, check_password
 
 
@@ -132,8 +132,51 @@ def products_details(request):
     return render(request, "products_details.html")
 
 
+def add_to_cart(request, product_id):
+    user_id = request.session.get("user_id")
+    if not user_id:
+        return redirect("login")
+    user = Register.objects.get(id=user_id)
+    product = Product.objects.get(id=product_id)
+    cart_item, created = Cart.objects.get_or_create(user=user, product=product)
+    if not created:
+        cart_item.quantity += 1
+        cart_item.save()
+    return redirect("cart")
+
+
+def update_cart(request, cart_id):
+    if request.method == "POST":
+        cart_item = Cart.objects.filter(id=cart_id).first()
+        if cart_item:
+            action = request.POST.get("action")
+            if action == "increase":
+                cart_item.quantity += 1
+                cart_item.save()
+            elif action == "decrease":
+                if cart_item.quantity > 1:
+                    cart_item.quantity -= 1
+                    cart_item.save()
+                else:
+                    cart_item.delete()
+    return redirect("cart")
+
+
+def remove_from_cart(request, cart_id):
+    Cart.objects.filter(id=cart_id).delete()
+    return redirect("cart")
+
+
 def cart(request):
-    return render(request, "cart.html")
+    user_id = request.session.get("user_id")
+    if not user_id:
+        return redirect("login")
+    cart_items = Cart.objects.filter(user_id=user_id).select_related("product")
+    for item in cart_items:
+        item.product.discount_price = item.product.price - (item.product.price * item.product.discount / 100)
+        item.total = item.product.discount_price * item.quantity
+    grand_total = sum(item.total for item in cart_items)
+    return render(request, "cart.html", {"cart_items": cart_items, "grand_total": grand_total})
 
 
 def order(request):
