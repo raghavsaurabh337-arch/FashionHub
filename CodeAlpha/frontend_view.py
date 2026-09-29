@@ -176,10 +176,10 @@ def remove_from_cart(request, cart_id):
 
 
 def cart(request):
-    user_id = request.session.get("user_id")
-    if not user_id:
-        return redirect("login")
-    cart_items = Cart.objects.filter(user_id=user_id).select_related("product")
+    # user_id = request.session.get("user_id")
+    # if not user_id:
+    #     return redirect("login")   .filter(user_id=user_id)
+    cart_items = Cart.objects.select_related("product")
     for item in cart_items:
         item.product.discount_price = item.product.price - (item.product.price * item.product.discount / 100)
         item.total = item.product.discount_price * item.quantity
