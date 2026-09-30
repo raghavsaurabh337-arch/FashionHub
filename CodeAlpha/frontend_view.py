@@ -4,7 +4,7 @@ from django.contrib.auth import authenticate, login
 from itertools import product
 
 from django.shortcuts import render, redirect
-from AppApi.models import Register, Product, Cart
+from AppApi.models import Register, Product, Cart, Order, OrderItem
 from django.contrib.auth.hashers import make_password, check_password
 
 
@@ -238,10 +238,101 @@ def cart(request):
     return render(request, "cart.html", {"cart_items": cart_items, "grand_total": grand_total})
 
 
+def order_history(request):
+    user_id = request.session.get("user_id")
+    if user_id:
+        orders = Order.objects.filter(user_id=user_id).prefetch_related("items__product").order_by("-created_at")
+    else:
+        order_ids = request.session.get("order_ids", [])
+        orders = Order.objects.filter(id__in=order_ids).prefetch_related("items__product").order_by("-created_at")
+    return render(request, "order_history.html", {"orders": orders})
+
+
 def order(request):
-    return render(request, "order.html")
+    user_id = request.session.get("user_id")
+
+    # Cart items collect karo
+    cart_items = []
+    grand_total = 0
+    if user_id:
+        user = Register.objects.filter(id=user_id).first()
+        if user:
+            db_items = Cart.objects.filter(user_id=user_id).select_related("product")
+            for item in db_items:
+                item.product.discount_price = item.product.price - (item.product.price * item.product.discount / 100)
+                item.total = item.product.discount_price * item.quantity
+                cart_items.append(item)
+    else:
+        session_cart = request.session.get("cart", {})
+        for pid, qty in session_cart.items():
+            product = Product.objects.filter(id=pid).first()
+            if product:
+                product.discount_price = product.price - (product.price * product.discount / 100)
+                cart_items.append({"id": pid, "product": product, "quantity": qty, "total": product.discount_price * qty})
+    grand_total = sum(item["total"] if isinstance(item, dict) else item.total for item in cart_items)
+
+    if request.method == "POST":
+        full_name = request.POST.get("full_name")
+        email = request.POST.get("email")
+        mobile = request.POST.get("mobile")
+        address = request.POST.get("address")
+        city = request.POST.get("city")
+        pincode = request.POST.get("pincode")
+
+        user_obj = Register.objects.filter(id=user_id).first() if user_id else None
+
+        order_obj = Order.objects.create(
+            user=user_obj,
+            full_name=full_name,
+            email=email,
+            mobile=mobile,
+            address=address,
+            city=city,
+            pincode=pincode,
+            total_amount=grand_total
+        )
+
+        for item in cart_items:
+            if isinstance(item, dict):
+                OrderItem.objects.create(order=order_obj, product=item["product"], quantity=item["quantity"], price=item["product"].discount_price)
+            else:
+                OrderItem.objects.create(order=order_obj, product=item.product, quantity=item.quantity, price=item.product.discount_price)
+
+        # Cart clear karo
+        if user_id:
+            Cart.objects.filter(user_id=user_id).delete()
+        else:
+            request.session["cart"] = {}
+            request.session.modified = True
+
+        # Order ID session mein save karo
+        order_ids = request.session.get("order_ids", [])
+        order_ids.append(order_obj.id)
+        request.session["order_ids"] = order_ids
+        request.session.modified = True
+
+        return render(request, "order_success.html", {"order": order_obj})
+
+    return render(request, "order.html", {"cart_items": cart_items, "grand_total": grand_total})
 def profile(request):
-       return render(request,"profile.html")
+    user_id = request.session.get("user_id")
+    user = Register.objects.filter(id=user_id).first() if user_id else None
+    session_profile = request.session.get("profile", {})
+
+    if request.method == "POST":
+        full_name = request.POST.get("full_name", "")
+        mobile = request.POST.get("mobile", "")
+        if user:
+            user.full_name = full_name
+            user.mobile = mobile
+            user.save()
+        else:
+            request.session["profile"] = {"full_name": full_name, "mobile": mobile}
+            request.session.modified = True
+            session_profile = request.session["profile"]
+        return render(request, "profile.html", {"user": user, "session_profile": session_profile, "success": "Profile saved successfully!"})
+
+    return render(request, "profile.html", {"user": user, "session_profile": session_profile})
 def logout(request):
     request.session.flush()
     return redirect("login")

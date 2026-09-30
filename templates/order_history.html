@@ -1,0 +1,72 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Orders - FashionHub</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body class="bg-light">
+
+{% include "header.html" %}
+
+<div class="container my-4">
+    <h3 class="fw-bold mb-4"><i class="fa-solid fa-box me-2"></i>My Orders</h3>
+
+    {% if orders %}
+        {% for order in orders %}
+        <div class="card shadow-sm border-0 rounded-4 mb-4">
+            <div class="card-header bg-white rounded-top-4 d-flex justify-content-between align-items-center py-3">
+                <div>
+                    <span class="fw-bold">Order #{{ order.id }}</span>
+                    <span class="text-muted ms-3 small">{{ order.created_at|date:"d M Y, h:i A" }}</span>
+                </div>
+                <span class="badge 
+                    {% if order.status == 'delivered' %}bg-success
+                    {% elif order.status == 'cancelled' %}bg-danger
+                    {% elif order.status == 'shipped' %}bg-info
+                    {% else %}bg-warning text-dark{% endif %}">
+                    {{ order.status|title }}
+                </span>
+            </div>
+            <div class="card-body">
+                {% for item in order.items.all %}
+                <div class="d-flex align-items-center gap-3 mb-3">
+                    {% if item.product.image %}
+                    <img src="{{ item.product.image.url }}" width="60" height="60" style="object-fit:cover; border-radius:8px; flex-shrink:0;">
+                    {% endif %}
+                    <div class="flex-grow-1">
+                        <div class="fw-bold">{{ item.product.name }}</div>
+                        <div class="text-muted small">{{ item.product.brand }} | {{ item.product.size }}</div>
+                        <div class="small">Qty: {{ item.quantity }} &nbsp;|&nbsp; ₹{{ item.price }} each</div>
+                    </div>
+                    <div class="fw-bold text-danger">₹{{ item.price|floatformat:2 }}</div>
+                </div>
+                {% endfor %}
+                <hr>
+                <div class="d-flex justify-content-between">
+                    <div class="text-muted small">
+                        <i class="fa-solid fa-location-dot me-1"></i>{{ order.address }}, {{ order.city }} - {{ order.pincode }}
+                    </div>
+                    <div class="fw-bold">Total: ₹{{ order.total_amount }}</div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+
+    {% else %}
+        <div class="text-center py-5">
+            <i class="fa-solid fa-box-open fa-3x text-muted mb-3"></i>
+            <h4>No orders yet</h4>
+            <a href="{% url 'products' %}" class="btn btn-warning mt-2">Shop Now</a>
+        </div>
+    {% endif %}
+
+</div>
+
+{% include "footer.html" %}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

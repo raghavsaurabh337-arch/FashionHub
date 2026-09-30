@@ -142,6 +142,10 @@
                 <i class="fa-solid fa-box me-2"></i>
                 Order
             </a>
+            <a class="dropdown-item" href="{% url 'order_history' %}">
+                <i class="fa-solid fa-clock-rotate-left me-2"></i>
+                My Orders
+            </a>
 
             {% if request.session.user_id %}
             <a class="dropdown-item text-danger" href="{% url 'logout' %}">
