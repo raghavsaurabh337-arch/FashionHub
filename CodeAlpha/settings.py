@@ -94,10 +94,14 @@ WSGI_APPLICATION = 'CodeAlpha.wsgi.application'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
-    'default': dj_database_url.config(
-        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
-        conn_max_age=600
-    )
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'fashionhub',
+        'USER': 'root',
+        'PASSWORD': 'Raghav@@123',
+        'HOST': 'localhost',
+        'PORT': '3306',
+    }
 }
 
 
