@@ -37,7 +37,11 @@ def register(request):
 def login(request):
 
     if request.session.get("user_id"):
-        return redirect("home")
+        user = Register.objects.filter(id=request.session["user_id"]).first()
+        if user:
+            return redirect("home")
+        else:
+            request.session.flush()
 
     if request.method == "POST":
 
@@ -47,10 +51,10 @@ def login(request):
         user = Register.objects.filter(email=email).first()
 
         if user and check_password(password, user.password):
-
+            request.session.flush()
             request.session["user_id"] = user.id
             request.session["user_email"] = user.email
-
+            request.session.save()
             return redirect("home")
 
         return render(request, "login.html", {"error": "Invalid email or password"})
@@ -141,49 +145,96 @@ def products_details(request):
 
 
 def add_to_cart(request, product_id):
+    product = Product.objects.filter(id=product_id).first()
+    if not product:
+        return redirect("home")
     user_id = request.session.get("user_id")
-    if not user_id:
-        return redirect("login")
-    user = Register.objects.get(id=user_id)
-    product = Product.objects.get(id=product_id)
-    cart_item, created = Cart.objects.get_or_create(user=user, product=product)
-    if not created:
-        cart_item.quantity += 1
-        cart_item.save()
+    if user_id:
+        user = Register.objects.filter(id=user_id).first()
+        if user:
+            cart_item, created = Cart.objects.get_or_create(user=user, product=product)
+            if not created:
+                cart_item.quantity += 1
+                cart_item.save()
+    else:
+        session_cart = request.session.get("cart", {})
+        pid = str(product_id)
+        session_cart[pid] = session_cart.get(pid, 0) + 1
+        request.session["cart"] = session_cart
+        request.session.modified = True
     return redirect("cart")
 
 
 def update_cart(request, cart_id):
     if request.method == "POST":
-        cart_item = Cart.objects.filter(id=cart_id).first()
-        if cart_item:
-            action = request.POST.get("action")
-            if action == "increase":
-                cart_item.quantity += 1
-                cart_item.save()
-            elif action == "decrease":
-                if cart_item.quantity > 1:
-                    cart_item.quantity -= 1
+        action = request.POST.get("action")
+        user_id = request.session.get("user_id")
+        if user_id:
+            cart_item = Cart.objects.filter(id=cart_id).first()
+            if cart_item:
+                if action == "increase":
+                    cart_item.quantity += 1
                     cart_item.save()
-                else:
-                    cart_item.delete()
+                elif action == "decrease":
+                    if cart_item.quantity > 1:
+                        cart_item.quantity -= 1
+                        cart_item.save()
+                    else:
+                        cart_item.delete()
+        else:
+            session_cart = request.session.get("cart", {})
+            pid = str(cart_id)
+            if pid in session_cart:
+                if action == "increase":
+                    session_cart[pid] += 1
+                elif action == "decrease":
+                    session_cart[pid] -= 1
+                    if session_cart[pid] <= 0:
+                        del session_cart[pid]
+                request.session["cart"] = session_cart
+                request.session.modified = True
     return redirect("cart")
 
 
 def remove_from_cart(request, cart_id):
-    Cart.objects.filter(id=cart_id).delete()
+    user_id = request.session.get("user_id")
+    if user_id:
+        Cart.objects.filter(id=cart_id).delete()
+    else:
+        session_cart = request.session.get("cart", {})
+        pid = str(cart_id)
+        if pid in session_cart:
+            del session_cart[pid]
+        request.session["cart"] = session_cart
+        request.session.modified = True
     return redirect("cart")
 
 
 def cart(request):
-    # user_id = request.session.get("user_id")
-    # if not user_id:
-    #     return redirect("login")   .filter(user_id=user_id)
-    cart_items = Cart.objects.select_related("product")
-    for item in cart_items:
-        item.product.discount_price = item.product.price - (item.product.price * item.product.discount / 100)
-        item.total = item.product.discount_price * item.quantity
-    grand_total = sum(item.total for item in cart_items)
+    user_id = request.session.get("user_id")
+    cart_items = []
+    grand_total = 0
+    if user_id:
+        user = Register.objects.filter(id=user_id).first()
+        if user:
+            db_items = Cart.objects.filter(user_id=user_id).select_related("product")
+            for item in db_items:
+                item.product.discount_price = item.product.price - (item.product.price * item.product.discount / 100)
+                item.total = item.product.discount_price * item.quantity
+                cart_items.append(item)
+    else:
+        session_cart = request.session.get("cart", {})
+        for pid, qty in session_cart.items():
+            product = Product.objects.filter(id=pid).first()
+            if product:
+                product.discount_price = product.price - (product.price * product.discount / 100)
+                cart_items.append({
+                    "id": pid,
+                    "product": product,
+                    "quantity": qty,
+                    "total": product.discount_price * qty,
+                })
+    grand_total = sum(item["total"] if isinstance(item, dict) else item.total for item in cart_items)
     return render(request, "cart.html", {"cart_items": cart_items, "grand_total": grand_total})
 
 

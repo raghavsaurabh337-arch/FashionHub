@@ -155,12 +155,14 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # Session Settings
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 SESSION_COOKIE_AGE = 86400
-SESSION_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = False
 SESSION_COOKIE_SAMESITE = 'Lax'
 SESSION_SAVE_EVERY_REQUEST = True
 
 # CSRF
 CSRF_TRUSTED_ORIGINS = [
     'https://fashionhub-u46n.onrender.com',
+    'http://127.0.0.1:8000',
+    'http://localhost:8000',
 ]
-CSRF_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = False
